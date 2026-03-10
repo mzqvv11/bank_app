@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Здравствуйте, {{ user.username }}!</h2>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Информация о счёте</div>
+            <div class="card-body">
+                <p><strong>Номер счёта:</strong> {{ account.account_number }}</p>
+                <p><strong>Баланс:</strong> {{ account.balance }} руб.</p>
+                <a href="{{ url_for('transfer') }}" class="btn btn-primary">Сделать перевод</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Последние операции</div>
+            <div class="card-body">
+                {% if transactions %}
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Тип</th>
+                                <th>Сумма</th>
+                                <th>Контрагент</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for t in transactions %}
+                            {% set is_sender = (t.from_account_id == account.id) %}
+                            <tr>
+                                <td>{{ t.timestamp.strftime('%d.%m.%Y %H:%M') }}</td>
+                                <td>{% if is_sender %}Исходящий{% else %}Входящий{% endif %}</td>
+                                <td>{% if is_sender %}-{% else %}+{% endif %}{{ t.amount }} руб.</td>
+                                <td>
+                                    {% if is_sender %}
+                                        {{ t.receiver_account.owner.username }}
+                                    {% else %}
+                                        {{ t.sender_account.owner.username }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>История операций пуста.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

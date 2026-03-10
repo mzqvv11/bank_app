@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Добро пожаловать в банк!</h1>
+    <p class="lead">Управляйте своими финансами просто и безопасно.</p>
+    {% if not session.user_id %}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}" role="button">Войти</a>
+        <a class="btn btn-success btn-lg" href="{{ url_for('register') }}" role="button">Регистрация</a>
+    {% endif %}
+</div>
+{% endblock %}
